@@ -3,11 +3,8 @@ import {
   StyleSheet,
   Text,
   View,
-  SafeAreaView,
   FlatList,
   StatusBar,
-  Platform,
-  Image,
 } from 'react-native';
 
 interface Review {

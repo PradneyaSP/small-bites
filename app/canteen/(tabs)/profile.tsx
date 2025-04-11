@@ -1,15 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
 import { useAuth } from '@/lib/context/AuthContext';
 
 export default function Profile() {
-  const router = useRouter();
   const { user, signOutUser } = useAuth()
   // const { useR, signOutUser } = useAuth();
-
 
   const menuItems = [
     { icon: 'person-outline', label: 'Edit Profile', route: '/edit-profile' },

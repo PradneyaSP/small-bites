@@ -1,18 +1,11 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, TextInput, Dimensions, Alert } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { Card, Button } from 'react-native-paper';
-import { useRouter } from 'expo-router';
 import { convertFirestoreTimestampToDate, fetchUserExpenses } from '@/lib/services/firestoreService';
 import { useAuth } from '@/lib/context/AuthContext';
 import { UserExpense } from '@/assets/types/db';
-
-const initialExpenses = [
-  { id: '1', name: 'Burger', amount: 10, date: '2025-03-01', canteen: 'Amul', category: 'Fast Food' },
-  { id: '2', name: 'Fries', amount: 30, date: '2025-03-05', canteen: 'HK', category: 'Fast Food' },
-  { id: '3', name: 'Soda', amount: 10, date: '2025-03-10', canteen: 'Amul', category: 'Beverage' },
-];
 
 const ExpensesScreen = () => {
   const [expenses, setExpenses] = useState<UserExpense[]>([]);
@@ -25,10 +18,7 @@ const ExpensesScreen = () => {
     canteen: ''
   });
 
-  const router = useRouter();
   const { user } = useAuth();
-
-
 
   useEffect(() => {
     const fetchExpenses = async () => {
@@ -39,7 +29,7 @@ const ExpensesScreen = () => {
       setExpenses(userExpenses);
     };
     fetchExpenses();
-  }, []);
+  }, [user]);
 
   // Calculate total expenses and expenses by canteen
   const totalExpenses = useMemo(() =>

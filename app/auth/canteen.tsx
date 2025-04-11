@@ -1,6 +1,6 @@
 import CanteenSignUpScreen from '@/components/screens/CanteenSignUpScreen';
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 
 const CanteenLoginScreen = () => {
     return (

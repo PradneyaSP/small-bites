@@ -7,7 +7,6 @@ import {
   Image,
   TouchableOpacity,
   TextInput,
-  Alert,
   ScrollView,
 } from "react-native";
 import { useTheme } from "react-native-paper";
@@ -17,10 +16,6 @@ import { useCart } from "../../lib/context/CartContext";
 import { fetchCanteenById } from "@/lib/services/firestoreService";
 import { Snackbar } from "react-native-paper";
 import { CanteenData, MenuItem } from "@/assets/types/db";
-
-type CartItem = MenuItem & {
-  quantity: number;
-};
 
 type CanteenMenuScreenProps = {
   canteenId: string;
@@ -41,16 +36,32 @@ const CanteenMenuScreen: React.FC<CanteenMenuScreenProps> = ({
   const [favorites, setFavorites] = useState<string[]>([]);
   const [visible, setVisible] = useState(false);
   const [lastAddedItem, setLastAddedItem] = useState<string>("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchMenuItems = async () => {
-      const data = (await fetchCanteenById(canteenId)) as CanteenData;
-      setMenuItems(data.menu);
+      try {
+        const data = (await fetchCanteenById(canteenId)) as CanteenData;
+        if (!data) {
+          console.error("Canteen not found");
+          return;
+        }
+        setMenuItems(data.menu || []);
+      } catch (error) {
+        console.error("Error fetching menu items:", error);
+
+      } finally {
+        setLoading(false);
+      }
     };
     fetchMenuItems();
-  }, []);
+  }, [canteenId]);
 
-  if (!menuItems) {
+  const [itemQuantities, setItemQuantities] = useState<Record<string, number>>(
+    menuItems!.reduce((acc, item) => ({ ...acc, [item.item_id]: 1 }), {})
+  );
+
+  if (loading) {
     return (
       <View style={styles.container}>
         <Text style={styles.resultsTitle}>Loading...</Text>
@@ -58,9 +69,6 @@ const CanteenMenuScreen: React.FC<CanteenMenuScreenProps> = ({
     );
   }
 
-  const [itemQuantities, setItemQuantities] = useState<Record<string, number>>(
-    menuItems.reduce((acc, item) => ({ ...acc, [item.item_id]: 1 }), {})
-  );
 
   const categories = ['All', 'Breakfast', 'Lunch', 'Snacks', 'Beverages'];
 

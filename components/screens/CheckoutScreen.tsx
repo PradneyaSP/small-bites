@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Modal, FlatList, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Modal, FlatList, Alert, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -7,6 +7,7 @@ import { useCart } from '../../lib/context/CartContext';
 import { OrderDetails } from '@/assets/types/db';
 import { useAuth } from '@/lib/context/AuthContext';
 import { placeNewOrder } from '@/lib/services/realtime';
+import { useTheme } from 'react-native-paper';
 
 type PaymentMethod = {
   id: string;
@@ -35,6 +36,7 @@ export default function CheckoutScreen({ canteenId, canteenName }: { canteenId: 
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<TimeSlot | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const theme = useTheme();
 
   const generateTimeSlots = (): TimeSlot[] => {
     const slots: TimeSlot[] = [];
@@ -100,7 +102,7 @@ export default function CheckoutScreen({ canteenId, canteenName }: { canteenId: 
         // Show error message for missing scheduled time
         return;
       }
-      if (selectedPayment != 'cash') {
+      if (selectedPayment !== 'cash') {
         Alert.alert("Please proceed with Cash on Delivery only.");
         return;
       }
@@ -152,6 +154,17 @@ export default function CheckoutScreen({ canteenId, canteenName }: { canteenId: 
       </Text>
     </TouchableOpacity>
   );
+
+  if (isLoading) {
+    return (
+      <SafeAreaView style={styles.container} edges={['top']}>
+        <View style={styles.header}>
+          <ActivityIndicator size="large" color={theme.colors.primary} />
+          <Text style={styles.headerTitle}>Placing Order...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>

@@ -19,8 +19,9 @@ import { useAuth } from '@/lib/context/AuthContext';
 import { Theme } from '@/constants/Theme';
 import { useTheme } from 'react-native-paper';
 import { MaterialIcons } from '@expo/vector-icons';
+import { MenuItem } from '@/assets/types/db';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 export default function AddItem() {
   const router = useRouter();
@@ -31,7 +32,7 @@ export default function AddItem() {
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
-  const { image, pickImage, uploadImage, uploading } = useImageUpload();
+  const { image, pickImage, uploadImage } = useImageUpload();
   const theme = useTheme();
   const styles = createStyles(theme);
 

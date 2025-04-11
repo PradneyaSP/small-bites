@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { subscribeToUserOrders } from '@/lib/services/realtime';
 import { useAuth } from '@/lib/context/AuthContext';
 
-const orders = () => {
+const OrdersPage = () => {
     const [userOrders, setUserOrders] = useState(null);
     const { user } = useAuth();
 
@@ -24,7 +24,7 @@ const orders = () => {
         return () => {
             if (unsubscribe) unsubscribe(); // Cleanup on unmount
         };
-    }, []);
+    }, [user]);
 
     return (
         <SafeAreaView>
@@ -47,4 +47,4 @@ const orders = () => {
     );
 };
 
-export default orders;
+export default OrdersPage;

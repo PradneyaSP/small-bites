@@ -6,7 +6,7 @@ interface Order {
   id: string;
   name: string;
   status: OrderStatus;
-  items: Array<{ name: string; quantity: number }>;
+  items: { name: string; quantity: number }[];
 }
 
 interface OrderContextType {
@@ -18,9 +18,9 @@ const OrderContext = createContext<OrderContextType | undefined>(undefined);
 
 export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [orders, setOrders] = useState<Order[]>([
-    { 
-      id: '1', 
-      name: 'Order #143021', 
+    {
+      id: '1',
+      name: 'Order #143021',
       status: 'pending',
       items: [
         { name: 'Burger', quantity: 2 },
@@ -28,18 +28,18 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         { name: 'Soda', quantity: 2 }
       ]
     },
-    { 
-      id: '2', 
-      name: 'Order #142501', 
+    {
+      id: '2',
+      name: 'Order #142501',
       status: 'preparing',
       items: [
         { name: 'Pizza', quantity: 1 },
         { name: 'Coke', quantity: 2 }
       ]
     },
-    { 
-      id: '3', 
-      name: 'Order #142009', 
+    {
+      id: '3',
+      name: 'Order #142009',
       status: 'ready',
       items: [
         { name: 'Sandwich', quantity: 1 }
@@ -48,7 +48,7 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   ]);
 
   const updateOrderStatus = (orderId: string, newStatus: OrderStatus) => {
-    setOrders(orders.map(order => 
+    setOrders(orders.map(order =>
       order.id === orderId ? { ...order, status: newStatus } : order
     ));
   };

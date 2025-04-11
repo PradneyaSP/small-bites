@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Animated } from 'react-native';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -32,10 +32,10 @@ export default function FoodDetailScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Stack.Screen 
+      <Stack.Screen
         options={{
           headerShown: false
-        }} 
+        }}
       />
       {/* Animated Header Background */}
       <Animated.View style={[styles.headerBackground, { opacity: headerOpacity }]} />
@@ -60,8 +60,8 @@ export default function FoodDetailScreen() {
       >
         {/* Food Image */}
         <View style={styles.imageContainer}>
-          <Animated.Image 
-            source={require('@/assets/images/menuItems/Piz.jpg')} 
+          <Animated.Image
+            source={require('@/assets/images/menuItems/Piz.jpg')}
             style={[styles.foodImage, { transform: [{ scale: imageScale }] }]}
             resizeMode="cover"
           />
@@ -114,7 +114,7 @@ export default function FoodDetailScreen() {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Description</Text>
             <Text style={styles.description}>
-              {params.description as string}. Our signature dish made with fresh ingredients 
+              {params.description as string}. Our signature dish made with fresh ingredients
               and prepared with love. Perfect blend of flavors that will satisfy your cravings.
             </Text>
           </View>
@@ -122,8 +122,8 @@ export default function FoodDetailScreen() {
           {/* Ingredients */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Ingredients</Text>
-            <ScrollView 
-              horizontal 
+            <ScrollView
+              horizontal
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={styles.ingredientsContainer}
             >
@@ -141,14 +141,14 @@ export default function FoodDetailScreen() {
       {/* Bottom Bar */}
       <View style={styles.bottomBar}>
         <View style={styles.quantityControl}>
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={() => setQuantity(prev => Math.max(1, prev - 1))}
             style={styles.quantityButton}
           >
             <Text style={styles.quantityButtonText}>−</Text>
           </TouchableOpacity>
           <Text style={styles.quantity}>{quantity}</Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={() => setQuantity(prev => prev + 1)}
             style={styles.quantityButton}
           >

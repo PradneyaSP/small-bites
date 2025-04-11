@@ -1,5 +1,4 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { User } from "@react-native-google-signin/google-signin";
 import { googleSignOut } from "../services/authService";
 import { addMemberToFirestore } from "../services/firestoreService";
 import { FirebaseAuthTypes, onAuthStateChanged, signOut } from "@react-native-firebase/auth";

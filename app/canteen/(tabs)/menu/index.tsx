@@ -6,13 +6,11 @@ import {
   TouchableOpacity,
   StatusBar,
   Image,
-  Platform,
   ScrollView,
   TextInput,
   Alert,
   RefreshControl,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/lib/context/AuthContext';
@@ -30,7 +28,7 @@ export default function Menu() {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const theme = useTheme();
 
-  const fetchMenuItems = async () => {
+  const fetchMenuItems = React.useCallback(async () => {
     try {
       const canteenData = await fetchCanteenByCanteenOwnerId(user?.uid || '') as CanteenData;
       if (canteenData) {
@@ -43,11 +41,11 @@ export default function Menu() {
     } catch (error) {
       console.error("Error fetching menu items:", error);
     }
-  }
+  }, [user?.uid]);
 
   useEffect(() => {
     fetchMenuItems();
-  }, [])
+  }, [fetchMenuItems])
   const categories = ['All', 'Breakfast', 'Lunch', 'Snacks', 'Beverages'];
   const styles = createStyles(theme);
 

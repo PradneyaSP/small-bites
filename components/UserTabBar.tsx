@@ -64,7 +64,7 @@ const UserTabBar = ({ state, descriptors, navigation, insets }: BottomTabBarProp
         };
 
         const color = isFocused ? '#4A90E2' : '#666';
-        if (route.name == 'index') {
+        if (route.name === 'index') {
           return (
             <PlatformPressable
               key={index}

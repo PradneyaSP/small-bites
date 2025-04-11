@@ -6,7 +6,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, useRouter } from "expo-router";
 import { FC, useEffect, useRef, useState } from "react";
 import { Theme } from "@/constants/Theme";
-import { Ionicons } from "@expo/vector-icons";
 
 const { width } = Dimensions.get('window');
 
@@ -34,7 +33,7 @@ const LoginPage: FC = () => {
         useNativeDriver: true,
       })
     ]).start();
-  }, []);
+  }, [fadeAnim, slideAnim]);
 
   const handleSignIn = async () => {
     try {

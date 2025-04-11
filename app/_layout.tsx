@@ -3,7 +3,6 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { configureOptions } from "@/constants/Config";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "@react-native-firebase/auth";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AuthProvider, useAuth } from "@/lib/context/AuthContext";
@@ -41,7 +40,7 @@ function RootContent() {
     if (!user && !inAuth) {
       router.replace('/auth/login');
     }
-  }, [user, initializing]);
+  }, [user, initializing, router, segments]);
 
 
   // if (initializing) {
@@ -82,11 +81,3 @@ function ThemedStatusBar() {
   const theme = useTheme();
   return <StatusBar backgroundColor={theme.colors.background} style={theme.colors.background === 'dark' ? 'light' : 'dark'} />;
 }
-
-const styles = StyleSheet.create({
-  centered: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});

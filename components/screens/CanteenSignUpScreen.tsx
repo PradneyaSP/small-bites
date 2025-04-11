@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Text, Alert, TouchableOpacity, Image, View, StyleSheet, ScrollView, Dimensions, Animated } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ActivityIndicator, TextInput, useTheme } from "react-native-paper";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import { useImageUpload } from "@/lib/hooks/useImageUpload";
 import { addCanteenOwnerToFirestore, registerCanteen } from "@/lib/services/firestoreService";
 import { Link, router } from "expo-router";
@@ -10,7 +10,7 @@ import { StatusBar } from "expo-status-bar";
 import { Theme } from "@/constants/Theme";
 import GoogleSignInButton from "../GoogleSignInButton";
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 const CanteenSignUpScreen: React.FC = () => {
   const theme = useTheme();
@@ -43,7 +43,7 @@ const CanteenSignUpScreen: React.FC = () => {
         useNativeDriver: true,
       })
     ]).start();
-  }, []);
+  }, [fadeAnim, slideAnim]);
 
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => {

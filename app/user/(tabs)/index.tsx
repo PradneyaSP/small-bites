@@ -1,29 +1,15 @@
 import { useAuth } from '@/lib/context/AuthContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { View, Text, StyleSheet, TextInput, Image, FlatList, TouchableOpacity, ActivityIndicator, Modal, ScrollView, ImageSourcePropType } from "react-native";
+import { View, Text, StyleSheet, TextInput, Image, FlatList, TouchableOpacity, ActivityIndicator, Modal, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState, useEffect, useCallback } from "react";
 import { useFonts, Poppins_400Regular, Poppins_700Bold } from '@expo-google-fonts/poppins';
 import * as SplashScreen from 'expo-splash-screen';
-import { Link, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { fetchAllCanteens } from '@/lib/services/firestoreService';
 import { CanteenData } from '@/assets/types/db';
 
 SplashScreen.preventAutoHideAsync();
-
-type ItemType = {
-    name: string,
-    image: ImageSourcePropType | undefined,
-    rating: number,
-    id: string
-}
-
-const canteens = [
-    { id: "1", name: "MiniCampus", rating: 4.9, image: require("@/assets/images/icon.jpg") },
-    { id: "2", name: "Nescafe", rating: 4.8, image: require("@/assets/images/icon.jpg") },
-    { id: "3", name: "HK-Cafe", rating: 4.6, image: require("@/assets/images/icon.jpg") },
-    { id: "4", name: "Bittu", rating: 4.7, image: require("@/assets/images/icon.jpg") },
-];
 
 const UserHomeScreen = () => {
     const { user, signOutUser } = useAuth();
