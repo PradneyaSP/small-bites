@@ -11,55 +11,72 @@ import {
   StatusBar,
   Alert,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import { Theme } from '@/constants/Theme';
+import { ActivityIndicator, useTheme } from 'react-native-paper';
+import { editMenuItemInCanteen } from '@/lib/services/firestoreService';
+import { useAuth } from '@/lib/context/AuthContext';
 
 export default function EditItem() {
   const params = useLocalSearchParams();
   const router = useRouter();
-  
+  const theme = useTheme();
+  const { user } = useAuth();
+
   const [name, setName] = useState(params.name as string);
   const [price, setPrice] = useState(params.price as string);
   const [calories, setCalories] = useState(params.calories as string);
   const [category, setCategory] = useState(params.category as string);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const categories = ['Breakfast', 'Lunch', 'Snacks', 'Beverages'];
-
-  const handleSave = () => {
+  if (!user) return;
+  const categories = ['All', 'Breakfast', 'Lunch', 'Snacks', 'Beverages'];
+  const styles = createStyles(theme);
+  const handleSave = async () => {
     if (!name || !price) {
       Alert.alert('Error', 'Please fill in all required fields');
       return;
     }
 
-    // Here you would typically save to your backend
-    // For now, we'll just go back
-    Alert.alert(
-      'Success',
-      'Item updated successfully',
-      [
-        {
-          text: 'OK',
-          onPress: () => router.back()
-        }
-      ]
-    );
+    try {
+      setIsLoading(true);
+      const response = await editMenuItemInCanteen(user.uid, params.id as string, {
+        name,
+        price: parseFloat(price),
+        calories: calories ? parseFloat(calories) : null,
+        category,
+      });
+      if (response) {
+        Alert.alert('Success', 'Item updated successfully!');
+        router.back();
+      } else {
+        Alert.alert('Error', 'Failed to update item. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error saving item:', error);
+      Alert.alert('Error', 'Failed to save item. Please try again.');
+      return;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <StatusBar barStyle="dark-content" />
+        <View style={styles.loading}>
+          <ActivityIndicator size="large" color={theme.colors.primary} />
+          <Text>Saving...</Text>
+        </View>
+      </View>
+    );
+  }
+
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <View style={styles.container}>
       <StatusBar barStyle="dark-content" />
       <View style={styles.content}>
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-            <Ionicons name="arrow-back" size={24} color="#333" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Edit Item</Text>
-          <TouchableOpacity onPress={handleSave} style={styles.saveButton}>
-            <Text style={styles.saveButtonText}>Save</Text>
-          </TouchableOpacity>
-        </View>
 
         <ScrollView style={styles.form}>
           {/* Name Input */}
@@ -123,13 +140,21 @@ export default function EditItem() {
               ))}
             </View>
           </View>
+
+          {/* Save Button */}
+          <TouchableOpacity
+            style={styles.saveButton}
+            onPress={handleSave}
+          >
+            <Text style={styles.saveButtonText}>Save</Text>
+          </TouchableOpacity>
         </ScrollView>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -157,10 +182,15 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   saveButton: {
-    padding: 8,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: theme.colors.primary,
+    borderRadius: 8,
+    padding: 12,
   },
   saveButtonText: {
-    color: '#007AFF',
+    color: theme.colors.onPrimary,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -197,14 +227,25 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   selectedCategory: {
-    backgroundColor: '#FFD337',
+    backgroundColor: theme.colors.primary,
   },
   categoryText: {
     fontSize: 14,
     color: '#666',
   },
   selectedCategoryText: {
-    color: '#333',
-    fontWeight: '600',
+    color: theme.colors.onPrimary,
+    fontWeight: '500',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
+  loading: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 8,
   },
 }); 

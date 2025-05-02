@@ -312,6 +312,31 @@ export const deleteMenuItemFromCanteen = async (userId: string, itemId: string) 
   }
 }
 
+export const editMenuItemInCanteen = async (userId: string, itemId: string, updatedItem: any) => {
+  try {
+    const canteenId = await getCanteenIdFromUserId(userId);
+    if (!canteenId) {
+      throw new Error("Canteen ID not found for user.");
+    }
+    const canteenRef = doc(db, "canteens", canteenId);
+    const canteenSnap = await getDoc(canteenRef);
+
+    if (canteenSnap.exists) {
+      const canteenData = canteenSnap.data() as CanteenData;
+      const menu = canteenData ? canteenData.menu || [] : [] as MenuItem[];
+      const updatedMenu = menu.map((item) => (item.item_id === itemId ? { ...item, ...updatedItem } : item));
+      await setDoc(canteenRef, { menu: updatedMenu }, { merge: true });
+      console.log("Menu item updated successfully!");
+      return { success: true };
+    } else {
+      throw new Error("Canteen not found.");
+    }
+  } catch (error) {
+    console.error("Error updating menu item:", error);
+    return { success: false, error };
+  }
+}
+
 export const addUserExpense = async (userId: string, expense: UserExpense) => {
   try {
     const userRef = doc(db, "users", userId);
@@ -492,11 +517,11 @@ export const fetchCompletedOrdersByCanteenId = async (userId: string) => {
   }
 };
 
-export const submitOrderReview = async(reviewOrder: any) => {
+export const submitOrderReview = async (reviewOrder: any) => {
   try {
     const timestamp = new Date().toISOString();
     const reviewRef = doc(db, "reviews", reviewOrder.orderId);
-    await setDoc(reviewRef, {...reviewOrder, timestamp});
+    await setDoc(reviewRef, { ...reviewOrder, timestamp });
     console.log("Review submitted successfully!");
     return { success: true };
   } catch (error) {
@@ -509,7 +534,7 @@ export const fetchUserReviews = async (userId: string) => {
   try {
     const reviewsRef = collection(db, "reviews");
     const q = query(reviewsRef, where("userId", "==", userId));
-    const reviewsSnap = await getDocs(q); 
+    const reviewsSnap = await getDocs(q);
 
     if (!reviewsSnap.empty) {
       const reviews = reviewsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
